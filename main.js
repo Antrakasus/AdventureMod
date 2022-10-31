@@ -26,7 +26,14 @@ var fpsFont = "30px arial";
 var toolSelected = 0;
 
 var tools=[
-
+    "Select",
+    "Menu",
+    "Add",
+    "Move",
+    "Delete",
+    "Resize",
+    "Link",
+    "Edit"
 ]
 
 var nodeInfo=[
@@ -102,7 +109,7 @@ function mousel(event){
 }
 
 function mouser(event){
-    
+    console.log("right")
 }
 
 function pointerUpdate(){
@@ -140,12 +147,12 @@ function fixCanSize(){
 function render(){
     ctx.clearRect(0,0,can.width,can.height);
     ctx.strokeStyle="gray";
-    ctx.beginPath()
+    ctx.beginPath();
     for(let i=-can.width+cam.x*cam.zoom;i<can.width*0.5;i+=gridSize*cam.zoom){
         ctx.moveTo(i+can.width*0.5, 0);
         ctx.lineTo(i+can.width*0.5, can.height);
     }
-    ctx.stroke()
+    ctx.stroke();
     for(let i=nodes.length-1;i>=0;i--){
         let n=nodes[i];
         ctx.fillStyle=n.color;
@@ -161,6 +168,9 @@ function load(){
     can = document.getElementsByTagName("canvas")[0];
     ctx = can.getContext("2d");
     cam = new camera();
+    window.addEventListener("beforeunload", (event) => {
+        event.returnValue = true;
+      });
     window.addEventListener('resize', fixCanSize);
     window.addEventListener('keydown', keyd);
     window.addEventListener('keyup', keyu);
