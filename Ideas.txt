@@ -1,0 +1,46 @@
+General
+- crafting gear takes more time (acquiring the materials) (crafting the ingreadients require you to have those skills unlocked)
+- durability depends on quality, withch depends on skill level & randomfactor
+- the itemsgearpieces have effectiveness that decrease with durability.
+- when an item is dropped, it's durability quickly decreases
+-
+
+Tech-tree system
+- you have a simple skill-tree (displaying the different skills), then by clicking on a skill you get a tree with the levels of that skill (quality, crafting speed, etc)
+- used for villagers and players, in similar way
+- limited total amount of skill point(=tech points), so blocks players from maximizing all the skills at once. Respec-ing is possible.
+- unlocked skills unlock the availability to corresponding crafting recipies
+- skills have levels
+
+Villager modification
+- removed curing discounts
+- villagers have lower breeding rate
+- villagers require food to survive (access to a farmer with job)
+- villages have guards
+- villages have a few guaranteed jobs, and the rest are random (farmersfishermen, guards, a blacksmith)
+- villagers can eat all kinds of edibles, not just vegetables
+- general increase in villager power (empowering themselves, not empowering the trading wih them) (not ranked below the players anymore) (neutral state, not just passive)
+- Reputation of a player actually effect the villagers' state. (guards can attack you if you have bad reputation, prices increase, etc)
+                Increased impact of reputation
+                Reputation affected by more factors
+
+ 
+
+Armor modifications
+- Enchanting points system for each armor piece.
+- Soft and hard Incompatibility
+                Hard choose one (as now)
+                Soft increased enchantment cost if multiple of them are chosen.
+
+- Armor slows you, logical scale
+- Armor increased protection, protection enchantments nerfed
+- Armor enchantability boost
+                For example gold has more enchantment points than the others
+
+- More materials
+                New metal for new armor kind found in the End For armor of equal power level to netherite, but more movement, less protection
+
+- more enchantments added
+                Speed - incresaed movement
+                Feather falling (more) - less fall damage
+                Riptide boost in movement while underwater
