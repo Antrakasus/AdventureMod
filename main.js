@@ -158,7 +158,7 @@ function load(){
     window.addEventListener('resize', fixCanSize);
     window.addEventListener('keydown', keyd);
     window.addEventListener('keyup', keyu);
-    can.addEventListener('mousemove', mousem);
+    window.addEventListener('mousemove', mousem);
     can.addEventListener('click', mousel);
     can.addEventListener('contextmenu', mouser);
     can.addEventListener("wheel", function(e) {
