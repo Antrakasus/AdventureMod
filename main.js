@@ -8,6 +8,7 @@ var frameTime = 0;
 var mouseX=0;
 var mouseY=0;
 var fps = 60;
+var usage = 0.1;
 var NodeSize=3;
 var conSize=2;
 var zMin = 0.5;
@@ -22,7 +23,11 @@ var ratio = 16/9;
 var canSizeMod = -100;
 var gridSize = 100;
 var fpsFont = "30px arial";
+var toolSelected = 0;
 
+var tools=[
+
+]
 
 var nodeInfo=[
     0,0,5,
@@ -134,9 +139,6 @@ function fixCanSize(){
 
 function render(){
     ctx.clearRect(0,0,can.width,can.height);
-    ctx.font=fpsFont;
-    ctx.fillText("FPS: "+Math.round(fps),10,30)
-    ctx.fillText("Usage%: "+Math.round(100*frameTime/deltaTime),10,60)
     ctx.strokeStyle="gray";
     ctx.beginPath()
     for(let i=-can.width+cam.x*cam.zoom;i<can.width*0.5;i+=gridSize*cam.zoom){
@@ -144,11 +146,15 @@ function render(){
         ctx.lineTo(i+can.width*0.5, can.height);
     }
     ctx.stroke()
-    for(let i=0;i<nodes.length;i++){
+    for(let i=nodes.length-1;i>=0;i--){
         let n=nodes[i];
         ctx.fillStyle=n.color;
         ctx.fill(circle(n, cam));
     }
+    ctx.font=fpsFont;
+    ctx.fillStyle="darkblue";
+    ctx.fillText("FPS: "+Math.round(fps),10,30)
+    ctx.fillText("Usage%: "+Math.round(100*usage),10,60)
 }
 
 function load(){
@@ -175,13 +181,19 @@ function load(){
         keyStatuses[i*2]=keys[i];
         keyStatuses[i*2+1]=0;
     }
+    nodes[0].color="red"
     fixCanSize();
     frame();
 }
 
 function frame(){
+    if(fps>6000||usage>1){
+        fps=60;
+        usage=0.1;
+    }
     deltaTime= performance.now()-deltaTimer;
     fps = fps*0.9+100/deltaTime;
+    usage = usage*0.9+frameTime/deltaTime*0.1;
     deltaTimer=performance.now()
     camMovement();
     render();
