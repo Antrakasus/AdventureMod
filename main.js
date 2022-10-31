@@ -19,7 +19,7 @@ var mOffsetY = 0;
 var boundX = 500
 var boundY = 500
 var ratio = 16/9;
-var canSizeMod = -1000;
+var canSizeMod = -100;
 var gridSize = 100;
 var fpsFont = "30px arial";
 
@@ -101,8 +101,8 @@ function mouser(event){
 }
 
 function pointerUpdate(){
-    nodes[0].x=mouseX-cam.x;
-    nodes[0].y=mouseY-cam.y;
+    nodes[0].x=mouseX/cam.zoom-cam.x;
+    nodes[0].y=mouseY/cam.zoom-cam.y;
 }
 
 function camMovement(){
@@ -125,7 +125,7 @@ function camMovement(){
 
 function fixCanSize(){
     canSize=Math.min(window.innerWidth/ratio,window.innerHeight);
-    canSize+canSizeMod;
+    canSize+=canSizeMod;
     can.width=canSize*ratio;
     can.height=canSize;
     mOffsetX=-can.offsetWidth*0.5
