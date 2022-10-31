@@ -2,11 +2,15 @@ var can, ctx, cam, canSize;
 var nodes=[];
 var connections=[];
 var keyStatuses=[];
+var selectedNodes=[];
 var deltaTimer=performance.now()
+var toolSelected = 0;
 var deltaTime = 0;
 var frameTime = 0;
 var mouseX=0;
 var mouseY=0;
+var selectX=0;
+var selectY=0;
 var fps = 60;
 var usage = 0.1;
 var NodeSize=3;
@@ -21,11 +25,16 @@ var boundX = 500
 var boundY = 500
 var ratio = 16/9;
 var canSizeMod = -100;
-var gridSize = 100;
+var gridSize = 25;
 var fpsFont = "30px arial";
-var toolSelected = 0;
+var cursorColor = "red"
+var selectedOutlineThiccness = 2;
+var selectedOutlineColour = "blue";
+var clearColor = "darkgray"
+var gridColor = "gray"
 
 var tools=[
+    "Nothing",
     "Select",
     "Menu",
     "Add",
@@ -34,7 +43,7 @@ var tools=[
     "Resize",
     "Link",
     "Edit"
-]
+];
 
 var nodeInfo=[
     0,0,5,
@@ -42,7 +51,7 @@ var nodeInfo=[
     -50,20,5,
     -100,-100,3,
     500,200,50
-]
+];
 
 var connectionsInfo=[
     1,2,
@@ -50,7 +59,7 @@ var connectionsInfo=[
     1,5,
     2,3,
     3,4
-]
+];
 
 class node{
     constructor(x,y, thicc){
@@ -104,12 +113,49 @@ function mousem(event){
     mouseY=event.clientY+mOffsetY;
 }
 
-function mousel(event){
-    nodes[nodes.length] = new node(nodes[0].x,nodes[0].y, 10)
+function moused(event){
+    selectedNodes=[];
+    toolSelected=tools.indexOf("Select");
+    selectX=nodes[0].x;
+    selectY=nodes[0].y;
+}
+
+function mouseu(event){
+    if(toolSelected==tools.indexOf("Select")){
+        for(let i=1; i<nodes.length;i++){
+            if(intersects(nodes[i],(nodes[0].x+selectX)*0.5,(nodes[0].y+selectY)*0.5,Math.abs(nodes[0].x-selectX),Math.abs(nodes[0].y-selectY))){
+                selectedNodes[selectedNodes.length]=nodes[i]
+            }
+        }
+    }
+    toolSelected=0;
 }
 
 function mouser(event){
-    console.log("right")
+    if(toolSelected==0){
+        toolSelected=tools.indexOf("Menu");
+        selectX=event.clientX;
+        selectY=event.clientY;
+    }else{
+        toolSelected=0;
+    }
+}
+
+function intersects(circle, rectx, recty, rectw, recth)
+{
+    let circleDistancex = Math.abs(circle.x - rectx);
+    let circleDistancey = Math.abs(circle.y - recty);
+
+    if (circleDistancex > (rectw/2 + circle.thicc)) { return false; }
+    if (circleDistancey > (recth/2 + circle.thicc)) { return false; }
+
+    if (circleDistancex <= (rectw/2)) { return true; } 
+    if (circleDistancey <= (recth/2)) { return true; }
+
+    let cornerDistance_sq = (circleDistancex - rectw/2)^2 +
+                         (circleDistancey - recth/2)^2;
+
+    return (cornerDistance_sq <= (circle.thicc^2));
 }
 
 function pointerUpdate(){
@@ -145,15 +191,40 @@ function fixCanSize(){
 }
 
 function render(){
-    ctx.clearRect(0,0,can.width,can.height);
-    ctx.strokeStyle="gray";
+    ctx.rect(0,0,can.width,can.height);
+    ctx.fillStyle=clearColor;
+    ctx.fill();
+    ctx.strokeStyle=gridColor;
     ctx.beginPath();
-    for(let i=-can.width+cam.x*cam.zoom;i<can.width*0.5;i+=gridSize*cam.zoom){
-        ctx.moveTo(i+can.width*0.5, 0);
-        ctx.lineTo(i+can.width*0.5, can.height);
+    for(let i=0; i<=can.width/gridSize/cam.zoom*2;i++){
+        let x;
+        if(i%2==0){
+            x = i*gridSize*cam.zoom;
+        }else{
+            x = -(i+1)*gridSize*cam.zoom;
+        }
+        ctx.moveTo(x+can.width*0.5+cam.x*cam.zoom, 0);
+        ctx.lineTo(x+can.width*0.5+cam.x*cam.zoom, can.height);
+    }
+    for(let i=0; i<=can.height/gridSize/cam.zoom*2;i++){
+        let y;
+        if(i%2==0){
+            y = i*gridSize*cam.zoom;
+        }else{
+            y = -(i+1)*gridSize*cam.zoom;
+        }
+        ctx.moveTo(0, y+can.height*0.5+cam.y*cam.zoom);
+        ctx.lineTo(can.width, y+can.height*0.5+cam.y*cam.zoom);
     }
     ctx.stroke();
-    for(let i=nodes.length-1;i>=0;i--){
+    ctx.fillStyle="blue";
+    for(let i=0; i<selectedNodes.length;i++){
+        let n=selectedNodes[i];
+        n=new node(n.x,n.y,n.thicc+selectedOutlineThiccness);
+        ctx.fillStyle=selectedOutlineColour;
+        ctx.fill(circle(n, cam));
+    }
+    for(let i=1;i<nodes.length;i++){
         let n=nodes[i];
         ctx.fillStyle=n.color;
         ctx.fill(circle(n, cam));
@@ -162,6 +233,8 @@ function render(){
     ctx.fillStyle="darkblue";
     ctx.fillText("FPS: "+Math.round(fps),10,30)
     ctx.fillText("Usage%: "+Math.round(100*usage),10,60)
+    ctx.fillStyle=cursorColor;
+    ctx.fill(circle(nodes[0], cam));
 }
 
 function load(){
@@ -175,7 +248,8 @@ function load(){
     window.addEventListener('keydown', keyd);
     window.addEventListener('keyup', keyu);
     window.addEventListener('mousemove', mousem);
-    can.addEventListener('click', mousel);
+    can.addEventListener('mousedown', moused);
+    can.addEventListener('mouseup', mouseu);
     can.addEventListener('contextmenu', mouser);
     can.addEventListener("wheel", function(e) {
         cam.zoom-=0.1*Math.sign(e.deltaY);
