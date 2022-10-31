@@ -19,7 +19,7 @@ var mOffsetY = 0;
 var boundX = 500
 var boundY = 500
 var ratio = 16/9;
-var canSizeMod = 100;
+var canSizeMod = -1000;
 var gridSize = 100;
 var fpsFont = "30px arial";
 
@@ -155,9 +155,9 @@ function load(){
     can = document.getElementsByTagName("canvas")[0];
     ctx = can.getContext("2d");
     cam = new camera();
-    document.addEventListener('resize', fixCanSize);
-    document.addEventListener('keydown', keyd);
-    document.addEventListener('keyup', keyu);
+    window.addEventListener('resize', fixCanSize);
+    window.addEventListener('keydown', keyd);
+    window.addEventListener('keyup', keyu);
     can.addEventListener('mousemove', mousem);
     can.addEventListener('click', mousel);
     can.addEventListener('contextmenu', mouser);
