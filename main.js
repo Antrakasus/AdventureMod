@@ -39,7 +39,7 @@ var contextSeparator = "gray";
 var contextWidth = 300;
 var contextTextOffsetL=10;
 var toolHeight = 30;
-var contextFont = "30px arial";
+var contextFont = "20px arial";
 var contextFontColour = "gray";
 var toolIgnoreIndex=3;
 
